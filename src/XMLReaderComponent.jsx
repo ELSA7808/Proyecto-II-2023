@@ -1,6 +1,6 @@
-import { useEffect } from "react";
 import { useState } from "react";
 import XMLParser from "react-xml-parser";
+import PropsTypes from "prop-types";
 
 export default () => {
   const [transmitterData, setTransmitterData] = useState({
@@ -79,12 +79,6 @@ export default () => {
     });
   };
 
-  useEffect(() => {
-    console.log("transmitterData :>> ", transmitterData);
-    console.log("receiverData :>> ", receiverData);
-    console.log("concepts :>> ", concepts);
-  }, [transmitterData, receiverData, concepts]);
-
   return (
     <div>
       <div className='p-3 my-3 rounded border text-center'>
@@ -93,6 +87,65 @@ export default () => {
           type='file'
           onChange={handleFileChange}
         />
+      </div>
+
+      {transmitterData.name && receiverData && (
+        <>
+          <XMLResultsTableComponent
+            title='Emisor:'
+            headerClassName='grid grid-cols-2'
+            headers={["Nombre", "RFC"]}
+            childrenClassName='grid grid-cols-2'>
+            <>
+              <p className='p-1'>{transmitterData.name}</p>
+              <p className='p-1'>{transmitterData.rfc}</p>
+            </>
+          </XMLResultsTableComponent>
+
+          <XMLResultsTableComponent
+            title='Receptor:'
+            headerClassName='grid grid-cols-3'
+            headers={["Nombre", "RFC", "Regimen fiscal"]}
+            childrenClassName='grid grid-cols-3'>
+            <>
+              <p className='p-1'>{receiverData.name}</p>
+              <p className='p-1'>{receiverData.rfc}</p>
+              <p className='p-1'>{receiverData.fiscalRegime}</p>
+            </>
+          </XMLResultsTableComponent>
+
+          <XMLResultsTableComponent
+            title='Conceptos:'
+            headerClassName='grid grid-cols-3'
+            headers={["Total", "Subtotal", "IVA"]}
+            childrenClassName='grid grid-cols-3'>
+            <>
+              <p className='p-1'>${concepts.total}</p>
+              <p className='p-1'>${concepts.subtotal}</p>
+              <p className='p-1'>${concepts.taxes}</p>
+            </>
+          </XMLResultsTableComponent>
+        </>
+      )}
+    </div>
+  );
+};
+
+const XMLResultsTableComponent = (props) => {
+  return (
+    <div className='p-3 my-5 rounded shadow bg-white'>
+      <h3 className='font-bold text-2xl my-3'>{props.title}</h3>
+      <div
+        className={
+          "border bg-gray-300 rounded-tr rounded-tl px-2 py-1 font-bold text-center " +
+          props.headerClassName
+        }>
+        {props.headers.map((header, index) => (
+          <h3 key={index}>{header}</h3>
+        ))}
+      </div>
+      <div className={"p-2 border text-center " + props.childrenClassName}>
+        {props.children}
       </div>
     </div>
   );
