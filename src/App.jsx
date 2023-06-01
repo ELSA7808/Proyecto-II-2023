@@ -1,15 +1,19 @@
-import XMLReaderComponent from "./XMLReaderComponent.jsx";
+import XMLReaderComponent from './XMLReaderComponent.jsx'
 
-function App () {
+function App() {
   return (
-    <div className='min-h-[100vh] max-w-[800px] m-auto flex-column items-center justify-center'>
-      <h1 className='text-2xl font-bold my-3 uppercase text-center'>
-        Proyecto contable
-      </h1>
+    <div>
+      <nav className="bg-[#003566] shadow-md">
+        <h3 className="text-[#ffd60a] font-bold p-3">Contabilización para el estado financiero</h3>
+      </nav>
 
-      <XMLReaderComponent />
+      <main className="bg-[#edede9] min-h-[calc(100vh-50px)] flex-column items-center justify-center">
+        <div className="max-w-[900px] mx-auto px-3 pt-5 pb-10">
+          <XMLReaderComponent />
+        </div>
+      </main>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
