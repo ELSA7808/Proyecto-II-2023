@@ -1,152 +1,182 @@
-import { useState } from "react";
-import XMLParser from "react-xml-parser";
-import PropsTypes from "prop-types";
+import { useState } from 'react'
+import XMLParser from 'react-xml-parser'
+
+const accountingAccountsList = [
+  {
+    id: 100,
+    name: 'BANCOS'
+  },
+  {
+    id: 103,
+    name: 'CLIENTES'
+  },
+  {
+    id: 106,
+    name: 'COMPRAS ALMACENES'
+  },
+  {
+    id: 113,
+    name: 'IVA ACREDITABLE'
+  },
+  {
+    id: 202,
+    name: 'IVA POR TRASLADAR'
+  },
+  {
+    id: 209,
+    name: 'IVA TRASLADADO'
+  },
+  {
+    id: 400,
+    name: 'VENTAS'
+  },
+  {
+    id: 560,
+    name: 'GASTOS GENERALES'
+  }
+]
 
 export default () => {
   const [transmitterData, setTransmitterData] = useState({
-    name: "",
-    rfc: "",
-    fiscalRegime: "",
-  });
+    name: '',
+    rfc: '',
+    fiscalRegime: ''
+  })
   const [receiverData, setReceiverData] = useState({
-    name: "",
-    rfc: "",
-    fiscalRegime: "",
-    fiscalAddress: "",
-    CFDIuse: "",
-  });
+    name: '',
+    rfc: '',
+    fiscalRegime: '',
+    fiscalAddress: '',
+    CFDIuse: ''
+  })
   const [concepts, setConcepts] = useState({
     total: 0,
     subtotal: 0,
-    taxes: 0,
-  });
+    taxes: 0
+  })
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
+  const handleFileChange = event => {
+    const file = event.target.files[0]
+    const reader = new FileReader()
 
-    reader.onload = (e) => onLoadXMLFile(e.target.result);
+    reader.onload = e => onLoadXMLFile(e.target.result)
 
-    reader.readAsText(file);
-  };
+    reader.readAsText(file)
+  }
 
-  const onLoadXMLFile = (xmlFile) => {
-    if (!xmlFile) return;
+  const onLoadXMLFile = xmlFile => {
+    if (!xmlFile) return
 
-    const xmlDocument = new XMLParser().parseFromString(xmlFile);
+    const xmlDocument = new XMLParser().parseFromString(xmlFile)
 
-    if (!xmlDocument) return;
+    if (!xmlDocument) return
 
-    xmlDocument.children.map((child) => {
-      const { name, attributes } = child;
+    xmlDocument.children.map(child => {
+      const { name, attributes } = child
 
-      if (name.includes("Emisor")) {
+      if (name.includes('Emisor')) {
         setTransmitterData({
           name: attributes.Nombre,
           rfc: attributes.Rfc,
-          fiscalRegime: attributes.RegimenFiscal,
-        });
+          fiscalRegime: attributes.RegimenFiscal
+        })
       }
 
-      if (name.includes("Receptor")) {
+      if (name.includes('Receptor')) {
         setReceiverData({
           name: attributes.Nombre,
           rfc: attributes.Rfc,
           fiscalRegime: attributes.RegimenFiscalReceptor,
           fiscalAddress: attributes.DomicilioFiscalReceptor,
-          CFDIuse: attributes.UsoCFDI,
-        });
+          CFDIuse: attributes.UsoCFDI
+        })
       }
 
-      if (name.includes("Impuestos")) {
-        setConcepts((prev) => {
+      if (name.includes('Impuestos')) {
+        setConcepts(prev => {
           return {
             ...prev,
-            taxes: child.attributes.TotalImpuestosTrasladados,
-          };
-        });
+            taxes: child.attributes.TotalImpuestosTrasladados
+          }
+        })
       }
-    });
+    })
 
-    console.log("xmlDocument :>> ", xmlDocument);
+    console.log('xmlDocument :>> ', xmlDocument)
 
-    setConcepts((prev) => {
+    setConcepts(prev => {
       return {
         ...prev,
         total: xmlDocument.attributes.Total,
-        subtotal: xmlDocument.attributes.SubTotal,
-      };
-    });
-  };
+        subtotal: xmlDocument.attributes.SubTotal
+      }
+    })
+  }
 
   return (
     <div>
-      <div className='p-3 my-3 rounded border text-center'>
-        <h2 className='font-bold my-2 text-xl'>Cargar Archivo XML</h2>
-        <input
-          type='file'
-          onChange={handleFileChange}
-        />
+      <div className="p-3 my-3 rounded border text-center">
+        <h2 className="font-bold my-2 text-xl">Cargar Archivo XML</h2>
+        <input type="file" onChange={handleFileChange} />
       </div>
 
       {transmitterData.name && receiverData && (
         <>
           <XMLResultsTableComponent
-            title='Emisor:'
-            headerClassName='grid grid-cols-2'
-            headers={["Nombre", "RFC"]}
-            childrenClassName='grid grid-cols-2'>
+            title="Emisor:"
+            headerClassName="grid grid-cols-2"
+            headers={['Nombre', 'RFC']}
+            childrenClassName="grid grid-cols-2"
+          >
             <>
-              <p className='p-1'>{transmitterData.name}</p>
-              <p className='p-1'>{transmitterData.rfc}</p>
+              <p className="p-1">{transmitterData.name}</p>
+              <p className="p-1">{transmitterData.rfc}</p>
             </>
           </XMLResultsTableComponent>
 
           <XMLResultsTableComponent
-            title='Receptor:'
-            headerClassName='grid grid-cols-3'
-            headers={["Nombre", "RFC", "Regimen fiscal"]}
-            childrenClassName='grid grid-cols-3'>
+            title="Receptor:"
+            headerClassName="grid grid-cols-3"
+            headers={['Nombre', 'RFC', 'Regimen fiscal']}
+            childrenClassName="grid grid-cols-3"
+          >
             <>
-              <p className='p-1'>{receiverData.name}</p>
-              <p className='p-1'>{receiverData.rfc}</p>
-              <p className='p-1'>{receiverData.fiscalRegime}</p>
+              <p className="p-1">{receiverData.name}</p>
+              <p className="p-1">{receiverData.rfc}</p>
+              <p className="p-1">{receiverData.fiscalRegime}</p>
             </>
           </XMLResultsTableComponent>
 
           <XMLResultsTableComponent
-            title='Conceptos:'
-            headerClassName='grid grid-cols-3'
-            headers={["Total", "Subtotal", "IVA"]}
-            childrenClassName='grid grid-cols-3'>
+            title="Conceptos:"
+            headerClassName="grid grid-cols-3"
+            headers={['Total', 'Subtotal', 'IVA']}
+            childrenClassName="grid grid-cols-3"
+          >
             <>
-              <p className='p-1'>${concepts.total}</p>
-              <p className='p-1'>${concepts.subtotal}</p>
-              <p className='p-1'>${concepts.taxes}</p>
+              <p className="p-1">${concepts.total}</p>
+              <p className="p-1">${concepts.subtotal}</p>
+              <p className="p-1">${concepts.taxes}</p>
             </>
           </XMLResultsTableComponent>
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
-const XMLResultsTableComponent = (props) => {
+const XMLResultsTableComponent = props => {
   return (
-    <div className='p-3 my-5 rounded shadow bg-white'>
-      <h3 className='font-bold text-2xl my-3'>{props.title}</h3>
+    <div className="p-3 my-5 rounded shadow bg-white">
+      <h3 className="font-bold text-2xl my-3">{props.title}</h3>
       <div
-        className={
-          "border bg-gray-300 rounded-tr rounded-tl px-2 py-1 font-bold text-center " +
-          props.headerClassName
-        }>
+        className={'border bg-gray-300 rounded-tr rounded-tl px-2 py-1 font-bold text-center ' + props.headerClassName}
+      >
         {props.headers.map((header, index) => (
           <h3 key={index}>{header}</h3>
         ))}
       </div>
-      <div className={"p-2 border text-center " + props.childrenClassName}>
-        {props.children}
-      </div>
+      <div className={'p-2 border text-center ' + props.childrenClassName}>{props.children}</div>
     </div>
-  );
-};
+  )
+}
