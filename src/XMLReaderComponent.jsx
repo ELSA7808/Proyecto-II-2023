@@ -1,18 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import XMLParser from "react-xml-parser";
 
-const xmlFile = `<?xml version="1.0" encoding="utf-8"?>
-<cfdi:Comprobante xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  Version="4.0"
-  Serie="L"
-  TipoDeComprobante="I"
-  Exportacion="01"
-  MetodoPago="PUE"
-  LugarExpedicion="45416"
-</cfdi:Comprobante>`;
-
 export default () => {
-  const [xmlDocument, setXmlDocument] = useState(null);
+  const [xmlDocument, setXMLDocument] = useState(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e) => onLoadXMLFile(e.target.result);
+
+    reader.readAsText(file);
+  };
 
   const onLoadXMLFile = (xmlFile) => {
     if (!xmlFile) return;
@@ -21,20 +20,20 @@ export default () => {
 
     if (!xmlDocument) return;
 
-    setXmlDocument(xmlDocument);
+    setXMLDocument(xmlDocument);
   };
-
-  useEffect(() => {
-    onLoadXMLFile(xmlFile);
-  }, []);
 
   return (
     <div>
-      {xmlDocument && (
-        <pre>
-          <code>{JSON.stringify(xmlDocument, null, 2)}</code>
-        </pre>
-      )}
+      <div className='p-3 my-3 rounded border text-center'>
+        <h2 className='font-bold my-2 text-xl'>Cargar Archivo XML</h2>
+        <input
+          type='file'
+          onChange={handleFileChange}
+        />
+      </div>
+
+      {xmlDocument && <pre>{JSON.stringify(xmlDocument, null, 2)}</pre>}
     </div>
   );
 };
