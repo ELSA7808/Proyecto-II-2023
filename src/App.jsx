@@ -1,32 +1,14 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import "./App.css";
+import XMLReaderComponent from "./XMLReaderComponent.jsx";
 
-function App() {
-  const [count, setCount] = useState(0);
-
+function App () {
   return (
-    <>
-      <div>
-        <a
-          href='https://react.dev'
-          rel='noopener noreferrer'
-          target='_blank'>
-          <img
-            src={reactLogo}
-            className='logo react'
-            alt='React logo'
-          />
-        </a>
-      </div>
-      <h1>React</h1>
-      <h1>Proyecto contable - Elvia Sánchez</h1>
-      <div className='card'>
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
-    </>
+    <div className='min-h-[100vh] max-w-[800px] m-auto flex-column items-center justify-center'>
+      <h1 className='text-2xl font-bold my-3 uppercase text-center'>
+        Proyecto contable
+      </h1>
+
+      <XMLReaderComponent />
+    </div>
   );
 }
 
